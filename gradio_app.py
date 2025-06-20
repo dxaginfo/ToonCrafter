@@ -69,6 +69,9 @@ def dynamicrafter_demo(result_dir='./tmp/', res=512):
 
 def get_parser():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--port', type=int, default=int(os.getenv('GRADIO_SERVER_PORT', 7860)), help='Port to run the server on')
+    parser.add_argument('--host', type=str, default=os.getenv('GRADIO_SERVER_NAME', '0.0.0.0'), help='Host to run the server on')
+    parser.add_argument('--share', action='store_true', help='Create a public link')
     return parser
 
 if __name__ == "__main__":
@@ -78,5 +81,13 @@ if __name__ == "__main__":
     result_dir = os.path.join('./', 'results')
     dynamicrafter_iface = dynamicrafter_demo(result_dir)
     dynamicrafter_iface.queue(max_size=12)
-    dynamicrafter_iface.launch(max_threads=1)
-    # dynamicrafter_iface.launch(server_name='0.0.0.0', server_port=80, max_threads=1)
+    
+    print(f"🚀 Starting ToonCrafter on {args.host}:{args.port}")
+    print(f"🌐 Access the application at: http://localhost:{args.port}")
+    
+    dynamicrafter_iface.launch(
+        server_name=args.host,
+        server_port=args.port,
+        max_threads=1,
+        share=args.share
+    )
